@@ -99,13 +99,13 @@
                   <span>Code</span>
                 </a>
               </span>
-              <!-- Chinese Link. -->
+              <!-- English Link. -->
               <span class="link-block">
-                <a href="index_zh.html" class="external-link button is-normal is-rounded is-dark">
+                <a href="index.html" class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                     <i class="fas fa-language"></i>
                   </span>
-                  <span>中文</span>
+                  <span>English</span>
                 </a>
               </span>
             </div>
@@ -121,16 +121,16 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
+        <h2 class="title is-3">摘要</h2>
         <div class="content has-text-justified">
           <p>
-            Recent advances in multimodal LLMs and systems that <i>use tools</i> for long-video QA point to the promise of reasoning over hour-long episodes. 
-            However, many methods still compress content into lossy summaries or rely on limited toolsets, weakening temporal grounding and missing fine-grained cues. 
-            We propose <b>LongVideoAgent</b>, a multi-agent framework in which a master LLM coordinates a grounding agent to localize question-relevant segments and a vision agent to extract targeted textual observations. 
-            The master agent plans with a step limit, and is trained with reinforcement learning to encourage concise, correct, and efficient multi-agent cooperation. 
-            This design helps the master agent focus on relevant clips via grounding, complements subtitles with visual detail, and yields interpretable trajectories. 
-            On our proposed <i>LongTVQA</i> and <i>LongTVQA+</i> which are episode-level datasets aggregated from TVQA/TVQA+, our multi-agent system significantly outperforms strong non-agent baselines. 
-            Experiments also show reinforcement learning further strengthens reasoning and planning for the trained agent.
+            多模态大语言模型（MLLMs）和利用工具进行长视频问答（QA）的系统最近取得了显著进展，展示了对长达数小时视频进行推理的潜力。
+            然而，许多现有方法仍将内容压缩为有损摘要，或依赖有限的工具集，导致时间定位能力减弱并遗漏细粒度线索。
+            我们提出了 <b>LongVideoAgent</b>，这是一个多智能体框架，其中主控智能体（Master LLM）协调定位智能体（Grounding Agent）来定位与问题相关的片段，并协调视觉智能体（Vision Agent）提取针对性的文本观察。
+            主控智能体在设定的步数限制内进行规划，并通过强化学习进行训练，以鼓励简洁、准确且高效的多智能体协作。
+            这种设计通过定位功能帮助主控智能体关注相关片段，利用视觉细节补充字幕信息，并产生可解释的推理轨迹。
+            在我们提出的 <i>LongTVQA</i> 和 <i>LongTVQA+</i>（从 TVQA/TVQA+ 聚合而成的剧集级数据集）上，我们的多智能体系统显著优于强大的非智能体基线模型。
+            实验还表明，强化学习进一步增强了训练后智能体的推理和规划能力。
           </p>
         </div>
       </div>
@@ -142,10 +142,10 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Overview</h2>
+        <h2 class="title is-3">概览</h2>
         <div class="content has-text-justified">
           <p>
-            Traditional single-pass MLLMs that ingest entire long videos in one context—typically (may through heavy downsampling and compression) often miss crucial evidence and produce wrong answers, whereas LongVideoAgent conducts multi-agent, multi-round, and multimodal reasoning to extract sparse, task-relevant cues and answer correctly.
+            传统的单次推理 MLLM 在单一上下文中处理整个长视频（通常通过重度下采样和压缩），往往会遗漏关键证据并产生错误答案。而 LongVideoAgent 通过多智能体、多轮、多模态推理来提取稀疏且任务相关的线索，从而给出正确答案。
           </p>
           <div class="has-text-centered">
             <img src="https://github.com/longvideoagent/LongVideoAgent/raw/main/readme_src/teaser.png" alt="Overview Teaser" style="width: 100%; max-width: 600px;">
@@ -160,26 +160,26 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Method: Multi-Agent Framework</h2>
+        <h2 class="title is-3">方法：多智能体框架</h2>
         <div class="content has-text-justified">
           <div class="has-text-centered">
             <img src="https://github.com/longvideoagent/LongVideoAgent/raw/main/readme_src/architecture.png" alt="Architecture" style="width: 100%; max-width: 800px;">
             <p>
-              Architecture of LongVideoAgent. A MasterAgent runs for up to \(K\) rounds, collaborating with a GroundingAgent to localize relevant clips from videos and a VisionAgent to read fine-grained cues from the localized frames. Evidence accumulates until the MasterAgent feels confident to answer the user.
+              LongVideoAgent 架构。主控智能体（MasterAgent）运行最多 \(K\) 轮，与定位智能体（GroundingAgent）协作从视频中定位相关片段，并与视觉智能体（VisionAgent）协作从定位的帧中读取细粒度线索。证据不断累积，直到主控智能体有信心回答用户。
             </p>
           </div>
-          <h3 class="title is-4">Iterative Reasoning Loop</h3>
+          <h3 class="title is-4">迭代推理循环</h3>
           <p>
-            Unlike single-pass models, LongVideoAgent operates in a bounded loop (max \(K\) steps). At each step, the MasterAgent generates a "thinking" trace and emits a structured action token:
+            与单次推理模型不同，LongVideoAgent 在有限循环（最多 \(K\) 步）中运行。在每一步中，主控智能体生成“思考”轨迹并发出结构化的动作标记：
           </p>
           <ul>
-            <li><code>&lt;request_grounding&gt;</code>: Calls the GroundingAgent to localize relevant video segments based on subtitles. The agent returns a symbolic tag <code>&lt;clip_X&gt;</code>.</li>
-            <li><code>&lt;visual_query&gt;</code>: Calls the VisionAgent to extract specific visual details (objects, actions, text) from the localized clip. The agent returns textual observations.</li>
-            <li><code>&lt;answer&gt;</code>: Terminates the loop and provides the final response when sufficient evidence is gathered.</li>
+            <li><code>&lt;request_grounding&gt;</code>：调用定位智能体，根据字幕定位相关的视频片段。智能体返回一个符号标签 <code>&lt;clip_X&gt;</code>。</li>
+            <li><code>&lt;visual_query&gt;</code>：调用视觉智能体，从定位的片段中提取特定的视觉细节（物体、动作、文本）。智能体返回文本观察结果。</li>
+            <li><code>&lt;answer&gt;</code>：当收集到足够证据时，终止循环并提供最终回答。</li>
           </ul>
-          <h3 class="title is-4">Reinforcement Learning (GRPO)</h3>
+          <h3 class="title is-4">强化学习 (GRPO)</h3>
           <p>
-            We optimize the MasterAgent using Group Relative Policy Optimization (GRPO). The training objective includes: 1. Structural validity. 2. Answer Correctness: Rewarding the agent for reaching the correct final answer.
+            我们使用组相对策略优化（GRPO）来优化主控智能体。训练目标包括：1. 结构有效性。2. 回答正确性：奖励智能体得出正确的最终答案。
           </p>
         </div>
       </div>
@@ -191,21 +191,21 @@
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Experimental Results</h2>
+        <h2 class="title is-3">实验结果</h2>
         <div class="content has-text-justified">
           <p>
-            We evaluate LongVideoAgent on LongTVQA and LongTVQA+, which are episode-level datasets.
+            我们在剧集级数据集 LongTVQA 和 LongTVQA+ 上评估了 LongVideoAgent。
           </p>
-          <h3 class="title is-4">Main Results</h3>
+          <h3 class="title is-4">主要结果</h3>
           <div class="has-text-centered">
             <img src="https://github.com/longvideoagent/LongVideoAgent/raw/main/readme_src/main_result.png" alt="Main Results" style="width: 100%; max-width: 800px;">
           </div>
           <p>
-            Performance on LongTVQA and LongTVQA+. The left block lists model attributes (Agentic, Input, RL fine-tune); the right block reports validation accuracy (%). GPT-4o and Gemini-2.5 Pro are multimodal baselines that process and accept the full long video directly. Methods labeled <code>Agentic</code> indicate the model operates as the MasterAgent; methods labeled <code>AgenticRL</code> additionally denote RL fine-tuning. Parenthesized green numbers denote absolute gains over the immediately preceding (non-agentic or non-RL) setting. We observe that: (i) our multi-agent framework, LongVideoAgent, consistently outperforms the non-agentic counterparts; (ii) agentic RL yields additional gains, especially for smaller open-source models; (iii) using frames provides visual evidence beyond subtitles, and generally outperforms subtitle-only inputs; (iv) closed-source models remain strong, but the gap narrows much when open-source models adopt agentic designs and agentic RL.
+            在 LongTVQA 和 LongTVQA+ 上的表现。左侧栏列出了模型属性（智能体化、输入方式、RL 微调）；右侧栏报告了验证集准确率（%）。GPT-4o 和 Gemini-2.5 Pro 是直接处理并接收完整长视频的多模态基线模型。标记为 <code>Agentic</code> 的方法表示模型作为主控智能体运行；标记为 <code>AgenticRL</code> 的方法额外表示进行了强化学习微调。括号中的绿色数字表示相对于前一设置（非智能体或非 RL）的绝对增益。我们观察到：(i) 我们的多智能体框架 LongVideoAgent 一致优于非智能体对应模型；(ii) 智能体化强化学习带来了额外增益，特别是对于较小的开源模型；(iii) 使用视频帧提供了字幕之外的视觉证据，且通常优于仅使用字幕的输入；(iv) 闭源模型依然强大，但当开源模型采用智能体设计和智能体化强化学习时，差距显著缩小。
           </p>
-          <h3 class="title is-4">Ablation Analysis</h3>
+          <h3 class="title is-4">消融实验分析</h3>
           <p>
-            We conduct comprehensive ablation studies to validate our design choices. First, we observe that both grounding and vision agents are essential, with the full multi-agent system achieving the highest accuracy. Second, increasing the reasoning step limit \(K\) improves performance until saturation, confirming the value of iterative planning. Finally, stronger vision backbones and larger temporal windows provide richer context, further boosting the agent's reasoning capabilities.
+            我们进行了全面的消融研究以验证我们的设计选择。首先，我们观察到定位智能体和视觉智能体都是必不可少的，完整的多智能体系统达到了最高准确率。其次，增加推理步数限制 \(K\) 会提高性能直到饱和，证实了迭代规划的价值。最后，更强大的视觉骨干网络和更大的时间窗口提供了更丰富的上下文，进一步提升了智能体的推理能力。
           </p>
           <div class="has-text-centered">
             <img src="https://github.com/longvideoagent/LongVideoAgent/raw/main/readme_src/ablation.png" alt="Ablation Analysis" style="width: 100%; max-width: 600px;">
